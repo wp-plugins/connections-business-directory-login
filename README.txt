@@ -4,7 +4,7 @@ Donate link: http://connections-pro.com/
 Tags: addresses, address book, addressbook, bio, bios, biographies, business, businesses, business directory, business-directory, business directory plugin, directory plugin, directory widget, church, contact, contacts, connect, connections, directory, directories, hcalendar, hcard, ical, icalendar, image, images, list, lists, listings, member directory, members directory, members directories, microformat, microformats, page, pages, people, profile, profiles, post, posts, plugin, shortcode, staff, user, users, vcard, wordpress business directory, wordpress directory, wordpress directory plugin, wordpress business directory, login, form, login form, widget, login widget
 Requires at least: 3.8
 Tested up to: 4.2
-Stable tag: 1.0
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -68,6 +68,14 @@ None yet...
 [Screenshots can be found here.](http://connections-pro.com/add-on/login/)
 
 == Changelog ==
+
+= 1.1 07/06/2015 =
+BUG: Load the text domain immediately on plugins_loaded action so the translation files will be loaded.
+BUG: Remove stray period from version number.
+TWEAK: Refactor loadTextDomain() so it is consistent with the other extensions for Connections.
+I18N: Include the POT file.
+I18N: Add a Spanish (Spain) translation (machine translated).
+DEV: Update .gitignore.
 
 = 1.0 08/08/2014 =
 * Initial release.

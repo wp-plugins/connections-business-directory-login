@@ -13,7 +13,7 @@
  * Plugin Name:       Connections Login
  * Plugin URI:        http://connections-pro.com
  * Description:       An extension for the Connections plugin which adds login content box and a widget for a single entry page.
- * Version:           1.0.
+ * Version:           1.1
  * Author:            Steven A. Zahm
  * Author URI:        http://connections-pro.com
  * License:           GPL-2.0+
@@ -32,21 +32,16 @@ if ( ! class_exists('Connections_Login') ) {
 	class Connections_Login {
 
 		// Define version.
-		const VERSION = '1.0';
+		const VERSION = '1.1';
 
 		public function __construct() {
 
 			self::defineConstants();
 			self::loadDependencies();
 
-			/*
-			 * Load translation. NOTE: This should be ran on the init action hook because
-			 * function calls for translatable strings, like __() or _e(), execute before
-			 * the language files are loaded will not be loaded.
-			 *
-			 * NOTE: Any portion of the plugin w/ translatable strings should be bound to the init action hook or later.
-			 */
-			add_action( 'init', array( __CLASS__ , 'loadTextdomain' ) );
+			// This should run on the `plugins_loaded` action hook. Since the extension loads on the
+			// `plugins_loaded action hook, call immediately.
+			self::loadTextdomain();
 
 			// Add the business hours option to the admin settings page.
 			// This is also required so it'll be rendered by $entry->getContentBlock( 'login_form' ).
@@ -101,35 +96,43 @@ if ( ! class_exists('Connections_Login') ) {
 		 * @access private
 		 * @since  1.0
 		 * @static
+		 *
 		 * @uses   apply_filters()
 		 * @uses   get_locale()
 		 * @uses   load_textdomain()
 		 * @uses   load_plugin_textdomain()
-		 *
-		 * @return void
 		 */
 		public static function loadTextdomain() {
 
-			// Plugin's unique textdomain string.
-			$textdomain = 'connections_login';
+			// Plugin textdomain. This should match the one set in the plugin header.
+			$domain = 'connections_login';
 
-			// Filter for the plugin languages folder.
-			$languagesDirectory = apply_filters( 'connections_login_lang_dir', CNL_DIR_NAME . '/languages/' );
+			// Set filter for plugin's languages directory
+			$languagesDirectory = apply_filters( "{$domain}_directory", CNL_DIR_NAME . '/languages/' );
 
-			// The 'plugin_locale' filter is also used by default in load_plugin_textdomain().
-			$locale = apply_filters( 'plugin_locale', get_locale(), $textdomain );
+			// Traditional WordPress plugin locale filter
+			$locale   = apply_filters( 'plugin_locale', get_locale(), $domain );
+			$fileName = sprintf( '%1$s-%2$s.mo', $domain, $locale );
 
-			// Filter for WordPress languages directory.
-			$wpLanguagesDirectory = apply_filters(
-				'connections_login_wp_lang_dir',
-				WP_LANG_DIR . '/connections-login/' . sprintf( '%1$s-%2$s.mo', $textdomain, $locale )
-			);
+			// Setup paths to current locale file
+			$local  = $languagesDirectory . $fileName;
+			$global = WP_LANG_DIR . "/{$domain}/" . $fileName;
 
-			// Translations: First, look in WordPress' "languages" folder = custom & update-secure!
-			load_textdomain( $textdomain, $wpLanguagesDirectory );
+			if ( file_exists( $global ) ) {
 
-			// Translations: Secondly, look in plugin's "languages" folder = default.
-			load_plugin_textdomain( $textdomain, FALSE, $languagesDirectory );
+				// Look in global `../wp-content/languages/{$languagesDirectory}/` folder.
+				load_textdomain( $domain, $global );
+
+			} elseif ( file_exists( $local ) ) {
+
+				// Look in local `../wp-content/plugins/{plugin-directory}/languages/` folder.
+				load_textdomain( $domain, $local );
+
+			} else {
+
+				// Load the default language files
+				load_plugin_textdomain( $domain, false, $languagesDirectory );
+			}
 		}
 
 		/**
