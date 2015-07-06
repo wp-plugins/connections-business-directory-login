@@ -70,12 +70,12 @@ None yet...
 == Changelog ==
 
 = 1.1 07/06/2015 =
-BUG: Load the text domain immediately on plugins_loaded action so the translation files will be loaded.
-BUG: Remove stray period from version number.
-TWEAK: Refactor loadTextDomain() so it is consistent with the other extensions for Connections.
-I18N: Include the POT file.
-I18N: Add a Spanish (Spain) translation (machine translated).
-DEV: Update .gitignore.
+* BUG: Load the text domain immediately on plugins_loaded action so the translation files will be loaded.
+* BUG: Remove stray period from version number.
+* TWEAK: Refactor loadTextDomain() so it is consistent with the other extensions for Connections.
+* I18N: Include the POT file.
+* I18N: Add a Spanish (Spain) translation (machine translated).
+* DEV: Update .gitignore.
 
 = 1.0 08/08/2014 =
 * Initial release.
